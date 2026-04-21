@@ -1078,11 +1078,12 @@ function exportCSV() {
   });
 
   const csv = rows.map(r=>r.join(',')).join('\n');
-  const blob = new Blob([csv],{type:'text/csv'});
   const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
+  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
   a.download = 'endarasha_research_data_'+new Date().toISOString().split('T')[0]+'.csv';
+  document.body.appendChild(a);
   a.click();
+  document.body.removeChild(a);
 }
 
 /* ─── INIT ──────────────────────────────────────────── */
