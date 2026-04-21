@@ -502,25 +502,18 @@ function generatePreloadedData() {
   return responses;
 }
 
-/* ─── STORAGE ───────────────────────────────────────── */
+/* ─── STORAGE ─────────────────────────────────────────
+   Data is hardcoded — no localStorage needed.
+   Works on GitHub Pages and all environments.
+───────────────────────────────────────────────────── */
 function loadResponses() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) {
-      allResponses = JSON.parse(raw);
-    }
-  } catch(e) { allResponses = []; }
-
-  // If no responses stored, seed with preloaded research data
-  if (allResponses.length === 0) {
-    allResponses = generatePreloadedData();
-    saveResponses();
-  }
+  allResponses = generatePreloadedData();
   updateBadge();
 }
 
 function saveResponses() {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(allResponses)); } catch(e) {}
+  // No-op: preloaded data is always in memory.
+  // New submissions are held in the session only.
 }
 
 function updateBadge() {
@@ -697,7 +690,7 @@ function submitStudent(e) {
     likert: data,
     open:{q1:fd.get('q1')||'',q2:fd.get('q2')||'',q3:fd.get('q3')||''}
   });
-  saveResponses(); updateBadge();
+  updateBadge();
   document.getElementById('view-student').innerHTML = `
     <div class="success-box">
       <div style="font-size:32px;margin-bottom:10px">✓</div>
@@ -728,7 +721,7 @@ function submitTeacher(e) {
     likert: data,
     open:{q1:fd.get('q1')||'',q2:fd.get('q2')||'',q3:fd.get('q3')||''}
   });
-  saveResponses(); updateBadge();
+  updateBadge();
   document.getElementById('view-teacher').innerHTML = `
     <div class="success-box">
       <div style="font-size:32px;margin-bottom:10px">✓</div>
@@ -1048,7 +1041,7 @@ function setTab(t) { evidenceTab=t; renderEvidence(); }
 function clearAll() {
   if (!confirm('Reset all data to the original research dataset? Any manually added responses will be removed.')) return;
   allResponses = generatePreloadedData();
-  saveResponses(); updateBadge(); renderEvidence();
+  updateBadge(); renderEvidence();
 }
 
 function exportCSV() {
